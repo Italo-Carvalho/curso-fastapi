@@ -11,6 +11,7 @@ class UserModel(settings.DBBaseModel):
     email = Column(String(256), index=True, nullable=False, unique=True)
     passwd = Column(String(256), nullable=False)
     is_admin = Column(Boolean, default=False)
+    phone_number = Column(String(10), nullable=True)
     articles = relationship(
         'ArticleModel',
         cascade='all,delete-orphan',

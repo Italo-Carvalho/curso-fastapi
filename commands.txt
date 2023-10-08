@@ -1,0 +1,22 @@
+# POSTGRESS
+
+docker pull postgres
+docker run --name faculdade-postgres -e POSTGRES_PASSWORD=123 -d -p 5432:5432 postgres
+docker exec -it faculdade-postgres /bin/bash
+psql -U postgres
+CREATE DATABASE faculdade;
+GRANT ALL PRIVILEGES ON DATABASE faculdade TO postgres;
+
+# ALEMBIC
+alembic init -t async migrations # inicia um ambiente generico
+
+# detectar quando muda no models e cria um script de migracao automaticamente
+alembic revision --autogenerate -m "init" # gerar a primeira migracao
+
+alembic revision -m '<message>' # cria uma nova revisão para o ambiente
+
+alembic upgrade -m '<revision#>' # atualiza o banco de dados com sua revisão
+
+alembic upgrade head # atualiza para a ultima versao de revisao
+
+alembic downgrade -1 # reverte sua revisao anterior

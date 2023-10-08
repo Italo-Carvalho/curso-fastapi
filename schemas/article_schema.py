@@ -11,3 +11,10 @@ class ArticleSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        json_schema_extra = {
+            'example': {
+                'title': 'Titulo legal',
+                'description': 'artigo top',
+                'font_url': 'https://sitelegal.com/algumacoisa'
+            }
+        }

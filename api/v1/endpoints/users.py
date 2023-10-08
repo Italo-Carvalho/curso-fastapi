@@ -32,6 +32,7 @@ async def post_user(user: UserSchemaCreate,
     new_user: UserModel = UserModel(name=user.name,
                                     last_name=user.last_name,
                                     email=user.email,
+                                    phone_number=user.phone_number,
                                     passwd=generate_hast_pass(user.passwd),
                                     is_admin=user.is_admin)
     async with db as session:
@@ -87,6 +88,8 @@ async def put_user(user_id: int,
                 user_up.name = user.name
             if user.email:
                 user_up.email = user.email
+            if user.phone_number:
+                user_up.phone_number = user.phone_number
             if user.is_admin:
                 user_up.is_admin = user.is_admin
             if user.passwd:

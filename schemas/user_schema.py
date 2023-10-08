@@ -8,6 +8,7 @@ class UserSchemaBase(BaseModel):
     name: str
     last_name: str
     email: EmailStr
+    phone_number: Optional[int] = None
     is_admin: bool = False
 
     class Config:
@@ -27,4 +28,5 @@ class UserSchemaUp(UserSchemaBase):
     last_name: Optional[str] = None
     email: Optional[EmailStr] = None
     passwd: Optional[str] = None
+    phone_number: Optional[str] = None
     is_admin: Optional[bool] = None
