@@ -1,0 +1,6 @@
+docker pull postgres
+docker run --name faculdade-postgres -e POSTGRES_PASSWORD=123 -d -p 5432:5432 postgres
+docker exec -it faculdade-postgres /bin/bash
+psql -U postgres
+CREATE DATABASE faculdade;
+GRANT ALL PRIVILEGES ON DATABASE faculdade TO postgres;
