@@ -1,5 +1,5 @@
 from typing import Optional, List
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from schemas.article_schema import ArticleSchema
 
 
@@ -11,7 +11,7 @@ class UserSchemaBase(BaseModel):
     is_admin: bool = False
 
     class Config:
-        orm_mode: True
+        from_attributes: True
 
 
 class UserSchemaCreate(UserSchemaBase):
@@ -23,8 +23,8 @@ class UserSchemaArticles(UserSchemaBase):
 
 
 class UserSchemaUp(UserSchemaBase):
-    name: Optional[str]
-    last_name: Optional[str]
-    email: Optional[EmailStr]
-    passwd: Optional[str]
-    is_admin: Optional[bool]
+    name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    passwd: Optional[str] = None
+    is_admin: Optional[bool] = None

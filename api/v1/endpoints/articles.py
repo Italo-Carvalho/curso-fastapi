@@ -19,7 +19,7 @@ async def post_article(article: ArticleSchema,
 
     new_article: ArticleModel = ArticleModel(title=article.title,
                                              description=article.description,
-                                             font_url=article.font_url,
+                                             font_url=str(article.font_url),
                                              user_id=logged_user.id)
 
     db.add(new_article)

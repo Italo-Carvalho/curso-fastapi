@@ -21,13 +21,14 @@ async def get_session() -> Generator:
         yield session
 
     finally:
-        await session.close
+        await session.close()
 
 
 async def get_current_user(
         db: Session = Depends(get_session),
         token: str = Depends(oauth2_schema)
 ) -> UserModel:
+
     cretendial_exception: HTTPException = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail='Acesso não autorizado',

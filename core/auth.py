@@ -31,14 +31,14 @@ async def authenticate(email: EmailStr, passwd: str, db: AsyncSession) -> Option
 
 
 def _create_token(token_type: str, lifetime: timedelta, sub: str) -> str:
-    # https://datatracker.ietf.org/doc/rfc7519/
+    # https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.3
     payload = {}
     tmz = timezone('America/Sao_Paulo')
     expires = datetime.now(tz=tmz) + lifetime
 
     payload['type'] = token_type
-    payload['exp'] = expires
-    payload['iap'] = datetime.now(tz=tmz)
+    payload['exp'] = expires.timestamp()
+    payload['iap'] = datetime.now(tz=tmz).timestamp()
     payload['sub'] = str(sub)
 
     return jwt.encode(payload, settings.JWT_SECRET,

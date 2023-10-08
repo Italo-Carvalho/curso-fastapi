@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, HttpUrl
+from pydantic import BaseModel, HttpUrl, Field
 
 
 class ArticleSchema(BaseModel):
@@ -7,7 +7,7 @@ class ArticleSchema(BaseModel):
     title: str
     description: str
     font_url: HttpUrl
-    user_id: Optional[int]
+    user_id: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
