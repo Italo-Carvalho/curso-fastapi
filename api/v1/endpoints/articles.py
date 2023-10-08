@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi import APIRouter, status, Depends, HTTPException, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -36,3 +36,71 @@ async def get_articles(db: AsyncSession = Depends(get_session)):
         articles: List[ArticleModel] = result.scalars().unique.all()
 
         return articles
+
+
+@router.get('/{article_id}',
+            response_model=ArticleSchema,
+            status_code=status.HTTP_200_OK)
+async def get_article(article_id: int,
+                      db: AsyncSession = Depends(get_session)):
+    async with db as session:
+        query = select(ArticleModel).filter(ArticleModel.id == article_id)
+        result = await session.execute(query)
+        article: ArticleModel = result.scalar().unique().one_or_none()
+
+        if article:
+            return article
+        else:
+            raise HTTPException(detail='Artigo não encontrado',
+                                status_code=status.HTTP_404_NOT_FOUND)
+
+
+@router.put('/{article_id}',
+            response_model=ArticleSchema,
+            status_code=status.HTTP_202_ACCEPTED)
+async def put_article(article_id: int,
+                      article: ArticleSchema,
+                      db: AsyncSession = Depends(get_session),
+                      logged_user: UserModel = Depends(get_current_user)):
+    async with db as session:
+        query = select(ArticleModel).filter(ArticleModel.id == article_id)
+        result = await session.execute(query)
+        article_up: ArticleModel = result.scalar().unique().one_or_none()
+
+        if article_up:
+            if article.title:
+                article_up.title = article.title
+            if article.description:
+                article_up.description = article.description
+            if article.font_url:
+                article_up.font_url = article.font_url
+            if logged_user.id != article_up.user_id:
+                article_up.user_id = logged_user.id
+
+            await session.commit()
+
+            return article_up
+        else:
+            raise HTTPException(detail='Artigo não encontrado',
+                                status_code=status.HTTP_404_NOT_FOUND)
+
+
+@router.delete('/{article_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_article(article_id: int,
+                         db: AsyncSession = Depends(get_session),
+                         logged_user: UserModel = Depends(get_current_user)):
+    async with db as session:
+        query = select(ArticleModel).filter(ArticleModel.id == article_id)\
+            .filter(
+            ArticleModel.user_id == logged_user.id)
+        result = await session.execute(query)
+        article_del: ArticleModel = result.scalar().unique().one_or_none()
+
+        if article_del:
+            await session.delete(article_del)
+            await session.commit()
+
+            return Response(status_code=status.HTTP_204_NO_CONTENT)
+        else:
+            raise HTTPException(detail='Artigo não encontrado',
+                                status_code=status.HTTP_404_NOT_FOUND)
